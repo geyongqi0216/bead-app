@@ -1,33 +1,24 @@
-// Pinia 状态仓库 (库存、色表)
 import { defineStore } from 'pinia'
 import { MARD_PALETTE, type MardColor } from '../constants/mard-palette'
 
-interface BeadStock {
-    id: string;
-    stock: number;
-}
+const GRAM_TO_COUNT = 250 // 1克 ≈ 250颗
 
 export const useBeadStore = defineStore('bead', {
     state: () => ({
-        // 整个 MARD 色库
         palette: MARD_PALETTE as MardColor[],
-        // 用户库存数据
-        inventory: [] as BeadStock[],
+        inventory: [] as { id: string; stock: number }[],
     }),
     actions: {
-        updateStock(id: string, amount: number) {
+        updateStock(id: string, count: number) {
             const item = this.inventory.find(i => i.id === id)
-            if (item) {
-                item.stock = amount
-            } else {
-                this.inventory.push({ id, stock: amount })
-            }
+            if (item) item.stock = count
+            else this.inventory.push({ id, stock: count })
+        },
+        updateStockByWeight(id: string, grams: number) {
+            this.updateStock(id, Math.floor(grams * GRAM_TO_COUNT))
         },
         getStock(id: string): number {
-            const item = this.inventory.find(i => i.id === id)
-            return item ? item.stock : 0
+            return this.inventory.find(i => i.id === id)?.stock || 0
         }
-    },
-    // 如果安装了 pinia-plugin-persistedstate，可以开启持久化
-    // persist: true,
+    }
 })

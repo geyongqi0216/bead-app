@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import { MARD_PALETTE, type MardColor } from '../constants/mard-palette'
 
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
-const API_URL = 'http://localhost:3000/api/beads/inventory';
+// 使用环境变量，如果没有则回退到开发环境
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/beads/inventory';
 
 export const useBeadStore = defineStore('bead', {
     state: () => ({

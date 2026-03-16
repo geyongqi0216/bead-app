@@ -1,7 +1,9 @@
+// src/store/beadStore.ts
 import { defineStore } from 'pinia'
 import { MARD_PALETTE, type MardColor } from '../constants/mard-palette'
 
-const GRAM_TO_COUNT = 250 // 1克 ≈ 250颗
+// 修改：10g = 1000颗 -> 1g = 100颗
+const GRAM_TO_COUNT = 100
 
 export const useBeadStore = defineStore('bead', {
     state: () => ({
@@ -18,7 +20,8 @@ export const useBeadStore = defineStore('bead', {
             this.updateStock(id, Math.floor(grams * GRAM_TO_COUNT))
         },
         getStock(id: string): number {
-            return this.inventory.find(i => i.id === id)?.stock || 0
+            const item = this.inventory.find(i => i.id === id)
+            return item ? item.stock : 0
         }
     }
 })
